@@ -81,10 +81,10 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * @param tokenId ID NFT
      */
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        // TODO: ссылка на изображение ок или нужно именно json?
         _requireMinted(tokenId);
-
         string memory baseURI = main.getTokenURI();
-        return bytes(baseURI).length > 0 ? string.concat(main.getTokenURI(), '/', Strings.toString(tokenId), '/', marker, '.jpg') : "";
+        return bytes(baseURI).length > 0 ? string.concat(baseURI, '/', Strings.toString(tokenId), '/', marker, '.jpg') : "";
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override(ERC721, ERC721Enumerable) {

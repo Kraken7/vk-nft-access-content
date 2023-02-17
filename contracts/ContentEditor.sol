@@ -13,9 +13,27 @@ contract ContentEditor is ERC1155, Ownable {
     Main private main;
     ContentOwner private contentOwner;
 
+    string private constant marker = 'editor';
+
     constructor(address _mainAddress, address _contentOwnerAddress) ERC1155("") {
         main = Main(_mainAddress);
         contentOwner = ContentOwner(_contentOwnerAddress);
+    }
+
+    /**
+     * Получить ссылку на изображение NFT
+     * 
+     * @param id ID NFT
+     */
+    function uri(uint256 id) public view override returns (string memory) {
+        // TODO: ссылка на изображение ок или нужно именно json?
+        _requireMinted(id);
+        string memory baseURI = main.getTokenURI();
+        return bytes(baseURI).length > 0 ? string.concat(baseURI, '/', Strings.toString(id), '/', marker, '.jpg') : "";
+    }
+
+    function _requireMinted(uint256 id) private view {
+        require(contentOwner.ownerOf(id) != address(0), "ERC1155: invalid token ID");
     }
 
     /**
