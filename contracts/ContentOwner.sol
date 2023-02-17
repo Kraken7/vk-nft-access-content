@@ -82,6 +82,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      */
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         _requireMinted(tokenId);
+
         string memory baseURI = main.getTokenURI();
         return bytes(baseURI).length > 0 ? string.concat(main.getTokenURI(), '/', Strings.toString(tokenId), '/', marker, '.jpg') : "";
     }

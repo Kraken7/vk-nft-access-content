@@ -5,15 +5,21 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ContentOwner.sol";
 import "./ContentEditor.sol";
+import "./ContentViewer.sol";
 
 contract Main is Ownable {
     string private tokenURI;
 
     address private addressMarket;
 
+    address private addressContentEditor;
+
+    address private addressContentViewer;
+
     constructor() {
         ContentOwner contentOwner = new ContentOwner(address(this));
-        new ContentEditor(address(this), address(contentOwner));
+        addressContentEditor = address(new ContentEditor(address(this), address(contentOwner)));
+        addressContentViewer = address(new ContentViewer(address(this), address(contentOwner)));
     }
 
     function getTokenURI() public view returns (string memory) {
@@ -30,5 +36,13 @@ contract Main is Ownable {
 
     function setAddressMarket(address _addressMarket) external onlyOwner {
         addressMarket = _addressMarket;
+    }
+
+    function getAddressContentEditor() public view returns (address) {
+        return addressContentEditor;
+    }
+
+    function getAddressContentViewer() public view returns (address) {
+        return addressContentViewer;
     }
 }

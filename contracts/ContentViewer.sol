@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Main.sol";
 import "./ContentOwner.sol";
-import "./ContentViewer.sol";
+import "./ContentEditor.sol";
 import "./IMarketAccessContent.sol";
 
-contract ContentEditor is ERC1155, Ownable {
+contract ContentViewer is ERC1155, Ownable {
     Main private main;
     ContentOwner private contentOwner;
 
@@ -26,14 +26,14 @@ contract ContentEditor is ERC1155, Ownable {
     modifier onlyContentOwner(uint256 id) {
         require(
             contentOwner.ownerOf(id) == _msgSender() ||
-            main.getAddressContentViewer() == _msgSender(), 
+            main.getAddressContentEditor() == _msgSender(), 
             'access is denied');
         _;
     }
 
     /**
      * Создание NFT на указанном адресе. Создать может только владелец NFT-ContentOwner
-     * Если на этом адресе есть NFT-ContentViewer, то сжечь ее.
+     * Если на этом адресе есть NFT-ContentEditor, то сжечь ее.
      * 
      * @param account адрес
      * @param id ID NFT
@@ -41,9 +41,9 @@ contract ContentEditor is ERC1155, Ownable {
     function mint(address account, uint256 id) public onlyContentOwner(id) {
         require(balanceOf(account, id) == 0, 'nft already exists');
 
-        ContentViewer contentViewer = ContentViewer(main.getAddressContentViewer());
-        if (contentViewer.balanceOf(account, id) == 1) {
-            contentViewer.burn(account, id);
+        ContentEditor contentEditor = ContentEditor(main.getAddressContentEditor());
+        if (contentEditor.balanceOf(account, id) == 1) {
+            contentEditor.burn(account, id);
         }
 
         _mint(account, id, 1, "");
@@ -69,7 +69,7 @@ contract ContentEditor is ERC1155, Ownable {
         bytes memory data
     ) internal virtual override {
         if (from != address(0) && to != address(0)) {
-            require(!contentOwner.getForbidTransferEditor(ids[0]), 'transfer is forbidden by owner');
+            require(!contentOwner.getForbidTransferViewer(ids[0]), 'transfer is forbidden by owner');
         }
     }
 }
