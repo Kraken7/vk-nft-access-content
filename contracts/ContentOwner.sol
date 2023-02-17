@@ -42,7 +42,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * 
      * @param tokenId ID NFT
      */
-    function switchAccessTransferViewer(uint256 tokenId) external {
+    function switchForbidTransferViewer(uint256 tokenId) external {
         require(ownerOf(tokenId) == msg.sender, 'access is denied');
         forbidTransferViewer[tokenId] = !forbidTransferViewer[tokenId];
     }
@@ -52,7 +52,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * 
      * @param tokenId ID NFT
      */
-    function switchAccessTransferEditor(uint256 tokenId) external {
+    function switchForbidTransferEditor(uint256 tokenId) external {
         require(ownerOf(tokenId) == msg.sender, 'access is denied');
         forbidTransferEditor[tokenId] = !forbidTransferEditor[tokenId];
     }
@@ -62,7 +62,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * 
      * @param tokenId ID NFT
      */
-    function getAccessTransferViewer(uint256 tokenId) public view returns (bool) {
+    function getForbidTransferViewer(uint256 tokenId) public view returns (bool) {
         return forbidTransferViewer[tokenId];
     }
 
@@ -71,7 +71,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * 
      * @param tokenId ID NFT
      */
-    function getAccessTransferEditor(uint256 tokenId) public view returns (bool) {
+    function getForbidTransferEditor(uint256 tokenId) public view returns (bool) {
         return forbidTransferEditor[tokenId];
     }
 

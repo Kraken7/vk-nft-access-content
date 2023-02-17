@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ContentOwner.sol";
+import "./ContentEditor.sol";
 
 contract Main is Ownable {
     string private tokenURI;
@@ -11,7 +12,8 @@ contract Main is Ownable {
     address private addressMarket;
 
     constructor() {
-        new ContentOwner(address(this));
+        ContentOwner contentOwner = new ContentOwner(address(this));
+        new ContentEditor(address(this), address(contentOwner));
     }
 
     function getTokenURI() public view returns (string memory) {
