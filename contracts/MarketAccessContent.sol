@@ -102,9 +102,9 @@ contract MarketAccessContent is Ownable, IMarketAccessContent {
 
         if (cost > 0) {
             if (msg.value > cost) {
-                payable(msg.sender).transfer(cost - msg.value); // TODO: безопасность
+                payable(msg.sender).transfer(cost - msg.value);
             }
-            payable(contentOwner.ownerOf(tokenId)).transfer(cost - cost * fee / 1000000); // TODO: безопасность
+            payable(contentOwner.ownerOf(tokenId)).transfer(cost - cost * fee / 1000000);
         }
 
         // если time = 0, то нет необходимости вносить покупателя в список на подписку
