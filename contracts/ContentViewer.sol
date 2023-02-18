@@ -58,6 +58,7 @@ contract ContentViewer is ERC1155, Ownable {
      */
     function mint(address account, uint256 id) public onlyContentOwner(id) {
         require(balanceOf(account, id) == 0, 'nft already exists');
+        require(account != _msgSender(), 'access is denied');
 
         ContentEditor contentEditor = ContentEditor(main.getAddressContentEditor());
         if (contentEditor.balanceOf(account, id) == 1) {
