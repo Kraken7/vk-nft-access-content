@@ -5,10 +5,15 @@ async function main() {
   mainContract = await mainContractFactory.deploy()
   await mainContract.deployed()
 
-  console.log('main: ' + await mainContract.address);
-  console.log('owner: ' + await mainContract.getAddressContentOwner());
-  console.log('editor: ' + await mainContract.getAddressContentEditor());
-  console.log('viewer: ' + await mainContract.getAddressContentViewer());
+  const mainAddress = await mainContract.address;
+  const ownerAddress = await mainContract.getAddressContentOwner();
+  const editorAddress = await mainContract.getAddressContentEditor();
+  const viewerAddress = await mainContract.getAddressContentViewer();
+
+  console.log('main: ' + mainAddress);
+  console.log('owner: ' + ownerAddress);
+  console.log('editor: ' + editorAddress);
+  console.log('viewer: ' + viewerAddress);
 }
 
 main().catch((error) => {

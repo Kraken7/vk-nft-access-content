@@ -26,10 +26,9 @@ contract ContentViewer is ERC1155, Ownable {
      * @param id ID NFT
      */
     function uri(uint256 id) public view override returns (string memory) {
-        // TODO: ссылка на изображение ок или нужно именно json?
         _requireMinted(id);
         string memory baseURI = main.getTokenURI();
-        return bytes(baseURI).length > 0 ? string.concat(baseURI, '/', Strings.toString(id), '/', marker, '.jpg') : "";
+        return bytes(baseURI).length > 0 ? string.concat(baseURI, '/', Strings.toString(id), '/', marker, '.json') : "";
     }
 
     function _requireMinted(uint256 id) private view {
