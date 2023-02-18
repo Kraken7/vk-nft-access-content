@@ -38,12 +38,21 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
     }
 
     /**
+     * Действие разрешено только владельцу NFT-ContentOwner
+     * 
+     * @param tokenId ID NFT
+     */
+    modifier onlyContentOwner(uint256 tokenId) {
+        require(ownerOf(tokenId) == _msgSender(), 'access is denied');
+        _;
+    }
+
+    /**
      * Переключатель - запрет на передачу токенов 'viwer'
      * 
      * @param tokenId ID NFT
      */
-    function switchForbidTransferViewer(uint256 tokenId) external {
-        require(ownerOf(tokenId) == msg.sender, 'access is denied');
+    function switchForbidTransferViewer(uint256 tokenId) external onlyContentOwner(tokenId) {
         forbidTransferViewer[tokenId] = !forbidTransferViewer[tokenId];
     }
 
@@ -52,8 +61,7 @@ contract ContentOwner is ERC721, ERC721Enumerable, Ownable {
      * 
      * @param tokenId ID NFT
      */
-    function switchForbidTransferEditor(uint256 tokenId) external {
-        require(ownerOf(tokenId) == msg.sender, 'access is denied');
+    function switchForbidTransferEditor(uint256 tokenId) external onlyContentOwner(tokenId) {
         forbidTransferEditor[tokenId] = !forbidTransferEditor[tokenId];
     }
 

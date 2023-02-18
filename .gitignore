@@ -11,3 +11,6 @@ typechain-types
 cache
 artifacts
 
+contracts/.deps
+
+tasks/sample_tasks.js

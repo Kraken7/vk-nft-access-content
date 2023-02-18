@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("solidity-coverage");
 require('dotenv').config();
+// require("./tasks/sample_tasks");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {

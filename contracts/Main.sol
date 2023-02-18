@@ -12,14 +12,16 @@ contract Main is Ownable {
 
     address private addressMarket;
 
+    address private addressContentOwner;
+
     address private addressContentEditor;
 
     address private addressContentViewer;
 
     constructor() {
-        ContentOwner contentOwner = new ContentOwner(address(this));
-        addressContentEditor = address(new ContentEditor(address(this), address(contentOwner)));
-        addressContentViewer = address(new ContentViewer(address(this), address(contentOwner)));
+        addressContentOwner = address(new ContentOwner(address(this)));
+        addressContentEditor = address(new ContentEditor(address(this), addressContentOwner));
+        addressContentViewer = address(new ContentViewer(address(this), addressContentOwner));
     }
 
     function getTokenURI() public view returns (string memory) {
@@ -36,6 +38,10 @@ contract Main is Ownable {
 
     function setAddressMarket(address _addressMarket) external onlyOwner {
         addressMarket = _addressMarket;
+    }
+
+    function getAddressContentOwner() public view returns (address) {
+        return addressContentOwner;
     }
 
     function getAddressContentEditor() public view returns (address) {

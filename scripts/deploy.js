@@ -1,11 +1,14 @@
 const hre = require("hardhat");
 
 async function main() {
-  const DemoContract = await hre.ethers.getContractFactory("DemoA")
-  demo = await DemoContract.deploy()
-  await demo.deployed()
+  const mainContractFactory = await hre.ethers.getContractFactory("Main")
+  mainContract = await mainContractFactory.deploy()
+  await mainContract.deployed()
 
-  console.log(demo.address);
+  console.log('main: ' + await mainContract.address);
+  console.log('owner: ' + await mainContract.getAddressContentOwner());
+  console.log('editor: ' + await mainContract.getAddressContentEditor());
+  console.log('viewer: ' + await mainContract.getAddressContentViewer());
 }
 
 main().catch((error) => {
