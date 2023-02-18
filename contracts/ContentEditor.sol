@@ -88,7 +88,10 @@ contract ContentEditor is ERC1155, Ownable {
     ) internal virtual override {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
         if (from != address(0) && to != address(0)) {
-            require(!contentOwner.getForbidTransferEditor(ids[0]), 'transfer is forbidden by owner');
+            // если заблокировано, делаем revert
+            for (uint256 i = 0; i < ids.length; ++i) {
+                require(!contentOwner.getForbidTransferViewer(ids[i]), 'transfer is forbidden by owner');
+            }
         }
     }
 }

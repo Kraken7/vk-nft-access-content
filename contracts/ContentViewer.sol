@@ -43,13 +43,15 @@ contract ContentViewer is ERC1155, Ownable {
     modifier onlyContentOwner(uint256 id) {
         require(
             contentOwner.ownerOf(id) == _msgSender() ||
-            main.getAddressContentEditor() == _msgSender(), 
+            main.getAddressContentEditor() == _msgSender() ||
+            main.getAddressMarket() == _msgSender(), 
             'access is denied');
         _;
     }
 
     /**
-     * Создание NFT на указанном адресе. Создать может только владелец NFT-ContentOwner
+     * Создание NFT на указанном адресе.
+     * Создать может владелец NFT-ContentOwner, контракт ContentEditor, контракт IMarketAccessContent
      * Если на этом адресе есть NFT-ContentEditor, то сжечь ее.
      * 
      * @param account адрес
@@ -68,7 +70,9 @@ contract ContentViewer is ERC1155, Ownable {
     }
 
     /**
-     * Удаление NFT на указанном адресе. Удалить может только владелец NFT-ContentOwner
+     * Удаление NFT на указанном адресе.
+     * Удалить может владелец NFT-ContentOwner, контракт ContentEditor, контракт IMarketAccessContent
+     * Удаление записи из маркетплейса.
      * 
      * @param account адрес
      * @param id ID NFT
@@ -76,6 +80,8 @@ contract ContentViewer is ERC1155, Ownable {
     function burn(address account, uint256 id) public onlyContentOwner(id) {
         require(balanceOf(account, id) == 1, 'nft not exists');
         _burn(account, id, 1);
+
+        IMarketAccessContent(main.getAddressMarket()).burn(id, account); // удалить запись из маркетплейса
     }
 
     function _beforeTokenTransfer(
@@ -88,7 +94,15 @@ contract ContentViewer is ERC1155, Ownable {
     ) internal virtual override {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
         if (from != address(0) && to != address(0)) {
-            require(!contentOwner.getForbidTransferViewer(ids[0]), 'transfer is forbidden by owner');
+            // если заблокировано, делаем revert
+            for (uint256 i = 0; i < ids.length; ++i) {
+                require(!contentOwner.getForbidTransferViewer(ids[i]), 'transfer is forbidden by owner');
+            }
+
+            // обновление списка в маркетплейсе
+            for (uint256 i = 0; i < ids.length; ++i) {
+                IMarketAccessContent(main.getAddressMarket()).changeAddressBuyer(ids[i], from, to);
+            }
         }
     }
 }
