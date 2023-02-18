@@ -19,25 +19,21 @@ async function main() {
     address: mainAddress,
     contract: 'contracts/Main.sol:Main'
   });
-  console.log('main: verify success');
-
   await run('verify:verify', {
     address: ownerAddress,
+    constructorArguments: [mainAddress],
     contract: 'contracts/ContentOwner.sol:ContentOwner'
   });
-  console.log('owner: verify success');
-
   await run('verify:verify', {
     address: editorAddress,
+    constructorArguments: [mainAddress, ownerAddress],
     contract: 'contracts/ContentEditor.sol:ContentEditor'
   });
-  console.log('editor: verify success');
-
   await run('verify:verify', {
     address: viewerAddress,
+    constructorArguments: [mainAddress, ownerAddress],
     contract: 'contracts/ContentViewer.sol:ContentViewer'
   });
-  console.log('viewer: verify success');
 }
 
 main().catch((error) => {
