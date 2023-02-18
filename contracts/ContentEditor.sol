@@ -90,7 +90,7 @@ contract ContentEditor is ERC1155, Ownable {
         if (from != address(0) && to != address(0)) {
             // если заблокировано, делаем revert
             for (uint256 i = 0; i < ids.length; ++i) {
-                require(!contentOwner.getForbidTransferViewer(ids[i]), 'transfer is forbidden by owner');
+                require(!contentOwner.getForbidTransferEditor(ids[i]), 'transfer is forbidden by owner');
             }
         }
     }
