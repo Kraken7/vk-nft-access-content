@@ -17,6 +17,7 @@ async function main() {
   const marketAddress = await marketContract.address;
 
   await mainContract.setAddressMarket(marketAddress);
+  await marketContract.setFee(10000);
 
   console.log('main: ' + mainAddress);
   console.log('owner: ' + ownerAddress);

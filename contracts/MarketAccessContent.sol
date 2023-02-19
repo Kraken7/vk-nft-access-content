@@ -43,6 +43,13 @@ contract MarketAccessContent is Ownable, IMarketAccessContent {
         fee = _fee;
     }
 
+    /**
+     * Получить комиссию (1 = 0.0001%)
+     */
+    function getFee() external view returns (uint) {
+        return fee;
+    }
+
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }
@@ -97,13 +104,15 @@ contract MarketAccessContent is Ownable, IMarketAccessContent {
         require(contentViewer.balanceOf(_msgSender(), tokenId) == 0, 'nft already exists');
         require(lots[tokenId].active, 'It is NFT is not for sale');
         require(msg.value >= lots[tokenId].cost, 'not enough funds');
+        require(contentOwner.ownerOf(tokenId) != _msgSender(), 'access is denied');
 
         uint cost = lots[tokenId].cost;
 
+        if (msg.value > cost) {
+            payable(msg.sender).transfer(msg.value - cost);
+        }
+
         if (cost > 0) {
-            if (msg.value > cost) {
-                payable(msg.sender).transfer(cost - msg.value);
-            }
             payable(contentOwner.ownerOf(tokenId)).transfer(cost - cost * fee / 1000000);
         }
 
@@ -174,5 +183,15 @@ contract MarketAccessContent is Ownable, IMarketAccessContent {
         }
 
         return _lots;
+    }
+
+    /**
+     * Получить время окончания подписки на NFT-ContentViewer
+     * 
+     * @param tokenId ID NFT
+     * @param buyer покупатель
+     */
+    function getTimeEnd(uint tokenId, address buyer) external view returns (uint) {
+        return buyers[tokenId][buyer];
     }
 }
